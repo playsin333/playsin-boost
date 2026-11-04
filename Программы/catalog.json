@@ -1,0 +1,74 @@
+[
+  {
+    "name": "HWiNFO",
+    "purpose": "Температуры, частоты и ограничения",
+    "url": "https://www.hwinfo.com/download/",
+    "guide": "01-HWiNFO.txt"
+  },
+  {
+    "name": "CPU-Z",
+    "purpose": "Модель CPU и режим памяти",
+    "url": "https://www.cpuid.com/softwares/cpu-z.html",
+    "guide": "02-CPU-Z.txt"
+  },
+  {
+    "name": "GPU-Z",
+    "purpose": "GPU, видеопамять и датчики",
+    "url": "https://www.techpowerup.com/gpuz/",
+    "guide": "03-GPU-Z.txt"
+  },
+  {
+    "name": "CrystalDiskInfo",
+    "purpose": "Состояние накопителей",
+    "url": "https://crystalmark.info/en/software/crystaldiskinfo/",
+    "guide": "04-CrystalDiskInfo.txt"
+  },
+  {
+    "name": "Autoruns",
+    "purpose": "Подробная автозагрузка Windows",
+    "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns",
+    "guide": "05-Autoruns.txt"
+  },
+  {
+    "name": "Process Explorer",
+    "purpose": "Кто использует CPU, память и диск",
+    "url": "https://learn.microsoft.com/en-us/sysinternals/downloads/process-explorer",
+    "guide": "06-Process-Explorer.txt"
+  },
+  {
+    "name": "CapFrameX",
+    "purpose": "Сравнение FPS и времени кадра",
+    "url": "https://www.capframex.com/download",
+    "guide": "07-CapFrameX.txt"
+  },
+  {
+    "name": "OCCT",
+    "purpose": "Проверка стабильности и охлаждения",
+    "url": "https://www.ocbase.com/download",
+    "guide": "08-OCCT.txt"
+  },
+  {
+    "name": "MSI Afterburner / RTSS",
+    "purpose": "Показатели поверх игры",
+    "url": "https://www.msi.com/Landing/afterburner/graphics-cards",
+    "guide": "09-MSI-Afterburner.txt"
+  },
+  {
+    "name": "NVIDIA Profile Inspector",
+    "purpose": "Просмотр профилей NVIDIA",
+    "url": "https://github.com/Orbmu2k/nvidiaProfileInspector/releases",
+    "guide": "10-NVIDIA-Inspector.txt"
+  },
+  {
+    "name": "Process Lasso",
+    "purpose": "Разбор приоритетов и ограничений процессов",
+    "url": "https://bitsum.com/",
+    "guide": "11-Process-Lasso.txt"
+  },
+  {
+    "name": "ISLC",
+    "purpose": "Необязательный эксперимент со standby-памятью",
+    "url": "https://www.wagnardsoft.com/",
+    "guide": "12-ISLC.txt"
+  }
+]

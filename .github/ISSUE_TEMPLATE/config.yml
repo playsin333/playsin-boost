@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Помощь в Discord
+    url: https://discord.gg/brMD3VYUAu
+    about: Вопросы по запуску и настройке.
+  - name: Сообщить об уязвимости
+    url: https://github.com/playsin333/playsin-boost/blob/main/SECURITY.md
+    about: Приватное сообщение о проблеме безопасности.

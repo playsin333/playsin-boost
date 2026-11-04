@@ -1,0 +1,6 @@
+# Local reports, generated archives and Python cache do not belong in Git.
+*.log
+*лог.txt
+*.zip
+*.bak
+__pycache__/

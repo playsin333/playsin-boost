@@ -1,0 +1,23 @@
+name: Сообщить об ошибке
+description: Ошибка запуска, настройки, обновления или отката
+title: "[Баг] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Версия BOOST и сборка Windows
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Что произошло
+      description: Шаги, выбранные блоки, ожидаемый и фактический результат; оборудование по теме.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Фрагмент лога
+      description: Удали личные имена, пути, IP, токены и пароли перед отправкой.
+      render: text

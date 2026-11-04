@@ -1,0 +1,57 @@
+[
+  {
+    "path": "media/covers/01-minimal.png",
+    "size": 1190892,
+    "sha256": "d1731fb2377280801def3318dc67372f8d7e0d5e388261ddd98d51bd7e96061c"
+  },
+  {
+    "path": "media/covers/02-cards.png",
+    "size": 1203250,
+    "sha256": "45057e902b01357ac15b08460f9f21fc1777dc84d39ddeb77a5daade3e6aafcc"
+  },
+  {
+    "path": "media/descriptions/chapters.txt",
+    "size": 557,
+    "sha256": "c8f49b38e2d2b7f53eb494dc373e6d84d88bcd83ae992ff3872b9a8a087aa906"
+  },
+  {
+    "path": "media/descriptions/shorts.txt",
+    "size": 1116,
+    "sha256": "accfce0643611e7365f9f2bf6b195bdb56fcf0335f254e14e46ecffbcd4f3f59"
+  },
+  {
+    "path": "media/descriptions/tiktok.txt",
+    "size": 1217,
+    "sha256": "ba344125bd7381faaa919f642b3f60d6e399a53ad412a5ddd68f20e5ade39698"
+  },
+  {
+    "path": "media/descriptions/titles.txt",
+    "size": 205,
+    "sha256": "0744381139539fa7252a95bcc37afd88fef48b6fa880498bce407aaaebdae30e"
+  },
+  {
+    "path": "media/descriptions/youtube.txt",
+    "size": 4840,
+    "sha256": "7ce38780af3b7025c5e4d10742aa7c303baf65b014dd40faccb647ea176c5371"
+  },
+  {
+    "path": "media/README.md",
+    "size": 2051,
+    "sha256": "736014ac61521a80f00abc3fd94565ac4f3ae2dbf5e756070a21617c212b798c"
+  },
+  {
+    "path": "media/videos/PLAYSIN-BOOST-intro-vertical-v2.mp4",
+    "size": 2430514,
+    "sha256": "7ec5b23288157d48d58032b7ef607c3ffca910660cbf1ff4b57d233d029030d8"
+  },
+  {
+    "path": "media/videos/PLAYSIN-BOOST-overview-v9.mp4",
+    "size": 43246615,
+    "sha256": "13636677a1568442ecb78ed4abdd9a50f88df86d0efa2da5fcbe1df98159c002"
+  },
+  {
+    "path": "media/videos/PLAYSIN-BOOST-safety-vertical-v1.mp4",
+    "size": 2946194,
+    "sha256": "301b971bba600030aa69b16bf9d6a93363fb33f79d631bac25a90221c4056d1d"
+  }
+]

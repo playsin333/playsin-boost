@@ -1,0 +1,12 @@
+{
+  "Product": "PLAYSIN TWEAK CHECK",
+  "Version": "2.0+boost.1",
+  "Repository": "https://github.com/playsin333/windows-tweak-checker",
+  "Commit": "424415c152c1138bf0dd565537edf043ae954803",
+  "Sha256": "e58a3ea270df35fb1d45f434ef9d72547b453ebf0641233f77637ec61f8198ba",
+  "UpstreamSha256": "4e77f5964a95ec3b80acd12fadadbfe9900d87e7914d10eae82f2cadad1ffa65",
+  "LocalChanges": [
+    "BOOST 3.0.10: correct SystemResponsiveness <10 explanation to 20 per Microsoft MMCSS documentation"
+  ],
+  "UpstreamVersion": "2.0"
+}

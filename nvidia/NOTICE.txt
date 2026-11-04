@@ -1,0 +1,3 @@
+NVIDIA Profile Inspector
+
+The included NVIDIA Profile Inspector files are from the NVIDIA Profile Inspector project by Orbmu2k and are distributed under its applicable MIT license. The tool is used by PLAYSIN BOOST to apply and verify NVIDIA driver profile settings.

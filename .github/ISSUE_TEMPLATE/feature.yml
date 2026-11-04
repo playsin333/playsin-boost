@@ -1,0 +1,11 @@
+name: Предложить улучшение
+description: Функция, инструкция или удобство интерфейса
+title: "[Идея] "
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Задача и предложение
+      description: Какую проблему решает и какое поведение ожидается.
+    validations:
+      required: true
