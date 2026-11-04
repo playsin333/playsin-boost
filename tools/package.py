@@ -63,6 +63,8 @@ def main():
     with zipfile.ZipFile(args.output, 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, data in entries.items():
             info = zipfile.ZipInfo(prefix + name, date_time=(1980, 1, 1, 0, 0, 0))
+            # ZipInfo otherwise records a different creator OS on Windows and Linux.
+            info.create_system = 3
             info.compress_type = zipfile.ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, data)

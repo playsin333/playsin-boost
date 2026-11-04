@@ -69,7 +69,7 @@ $BR = @{
 # @brand-end
 
 # PLAYSIN BOOST 3.0 · playsin333
-$P3Version   = '3.0.12'
+$P3Version   = '3.0.13'
 $P3Root      = Join-Path $env:SystemDrive $BR.Tag
 $OtherRoot   = Join-Path $env:SystemDrive $BR.Other
 $Desktop     = [Environment]::GetFolderPath('Desktop')

@@ -9,12 +9,12 @@
 {"ManifestUrl":"https://raw.githubusercontent.com/playsin333/playsin-boost/main/boost-release.json"}
 ```
 
-Источник рядом с папками версий имеет приоритет. В 3.0.12 точный прежний официальный URL на pc-optimizer разрешается в новый публичный канал, без изменения исходного файла. Произвольные пользовательские источники сохраняются. Для старых BAT первый переход на 3.0.12 выполняется вручную.
+Источник рядом с папками версий имеет приоритет. В 3.0.13 точный прежний официальный URL на pc-optimizer разрешается в новый публичный канал, без изменения исходного файла. Произвольные пользовательские источники сохраняются. Для старых BAT первый переход на 3.0.13 выполняется вручную.
 
 ## Сборка
 
 ```text
-python tools/package.py releases/v3.0.12/PLAYSIN-BOOST-3.0.12.zip --sync-metadata --check-metadata --archive-url https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.12/PLAYSIN-BOOST-3.0.12.zip --release-manifest boost-release.json
+python tools/package.py releases/v3.0.13/PLAYSIN-BOOST-3.0.13.zip --sync-metadata --check-metadata --archive-url https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.13/PLAYSIN-BOOST-3.0.13.zip --release-manifest boost-release.json
 python tools/verify_release.py
 ```
 

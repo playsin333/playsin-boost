@@ -1,8 +1,9 @@
 $ErrorActionPreference='Stop'
 $root=Split-Path -Parent $PSScriptRoot
 $tokens=$null;$errors=$null
-$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $root 'PLAYSIN BOOST 3.0.bat'),[ref]$tokens,[ref]$errors)
-if ($errors.Count) { throw 'Invalid BAT syntax' }
+$raw=[IO.File]::ReadAllText((Join-Path $root 'PLAYSIN BOOST 3.0.bat'),[Text.Encoding]::UTF8)
+$ast=[Management.Automation.Language.Parser]::ParseInput($raw,[ref]$tokens,[ref]$errors)
+if ($errors.Count) { throw ($errors | ForEach-Object { $_.Message + ' line ' + $_.Extent.StartLineNumber }) }
 $fn=$ast.Find({param($n) $n -is [Management.Automation.Language.FunctionDefinitionAst] -and $n.Name -eq 'Get-BoostUpdateSource'},$false)
 # Import only the source resolver; no tuning entry point or Windows settings execute.
 . ([scriptblock]::Create($fn.Extent.Text))

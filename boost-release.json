@@ -1,7 +1,7 @@
 {
   "Schema": 1,
   "Product": "PLAYSIN BOOST",
-  "Version": "3.0.12",
-  "ArchiveUrl": "https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.12/PLAYSIN-BOOST-3.0.12.zip",
-  "Sha256": "96124336d9fa6fa88fb24eb651146fbb543be8d9603ec484251b38220c84788f"
+  "Version": "3.0.13",
+  "ArchiveUrl": "https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.13/PLAYSIN-BOOST-3.0.13.zip",
+  "Sha256": "7fcbbaff96370bac238e981baa4f8740bcb2bafe758f75a382498526e3e2b298"
 }
