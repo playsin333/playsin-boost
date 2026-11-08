@@ -1,4 +1,4 @@
-PLAYSIN BOOST 3.0.13 — с чего начать
+PLAYSIN BOOST 3.0.14 — с чего начать
 
 1. Распакуй весь ZIP в обычную папку.
 2. Сохрани nvidia, checker и Программы рядом с PLAYSIN BOOST 3.0.bat.
@@ -17,3 +17,7 @@ PLAYSIN BOOST 3.0.13 — с чего начать
 Инструкция: https://github.com/playsin333/playsin-boost
 Discord: https://discord.gg/brMD3VYUAu
 Telegram: https://t.me/playsin333tgk
+
+Если вместо русского текста видны ???:
+Открой инструкцию: https://github.com/playsin333/playsin-boost/blob/main/docs/FAQ.md#вместо-русского-текста-вопросительные-знаки
+Кодировку BAT менять не нужно.

@@ -3,10 +3,11 @@
   "Version": "2.0+boost.1",
   "Repository": "https://github.com/playsin333/windows-tweak-checker",
   "Commit": "424415c152c1138bf0dd565537edf043ae954803",
-  "Sha256": "e58a3ea270df35fb1d45f434ef9d72547b453ebf0641233f77637ec61f8198ba",
+  "Sha256": "698a26e634117c594bda0541990534918e6e3fbe1350beec88a55213fad7a5cf",
   "UpstreamSha256": "4e77f5964a95ec3b80acd12fadadbfe9900d87e7914d10eae82f2cadad1ffa65",
   "LocalChanges": [
-    "BOOST 3.0.10: correct SystemResponsiveness <10 explanation to 20 per Microsoft MMCSS documentation"
+    "BOOST 3.0.10: correct SystemResponsiveness <10 explanation to 20 per Microsoft MMCSS documentation",
+    "BOOST 3.0.14: initialize UTF-8 in the PowerShell launcher before reading and executing the checker"
   ],
   "UpstreamVersion": "2.0"
 }

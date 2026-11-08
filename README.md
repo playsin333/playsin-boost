@@ -5,15 +5,15 @@
 <p align="center"><b>Бесплатная настройка Windows 10 / 11 x64 от playsin333.</b><br>Готовые наборы, ручной выбор и понятный план до применения.</p>
 
 <p align="center">
-  <a href="https://github.com/playsin333/playsin-boost/raw/refs/heads/main/releases/v3.0.13/PLAYSIN-BOOST-3.0.13.zip"><img src="https://raw.githubusercontent.com/playsin333/playsin-boost/main/assets/download.svg" alt="Скачать PLAYSIN BOOST 3.0.13" width="300" height="64"></a>
+  <a href="https://github.com/playsin333/playsin-boost/raw/refs/heads/main/releases/v3.0.14/PLAYSIN-BOOST-3.0.14.zip"><img src="https://raw.githubusercontent.com/playsin333/playsin-boost/main/assets/download.svg" alt="Скачать PLAYSIN BOOST 3.0.14" width="300" height="64"></a>
 </p>
 <p align="center">
-  <a href="https://github.com/playsin333/playsin-boost/releases/tag/v3.0.13">Что нового</a> ·
+  <a href="https://github.com/playsin333/playsin-boost/blob/main/docs/CHANGELOG.md">Что нового</a> ·
   <a href="https://github.com/playsin333/playsin-boost/blob/main/docs/QUICKSTART.md">Как запустить</a> ·
   <a href="https://discord.gg/brMD3VYUAu">Помощь в Discord</a> ·
   <a href="https://t.me/playsin333tgk">Telegram</a>
 </p>
-<p align="center"><a href="https://github.com/playsin333/playsin-boost/actions/workflows/validate.yml"><img src="https://github.com/playsin333/playsin-boost/actions/workflows/validate.yml/badge.svg" alt="Проверки пакета и источника обновлений"></a><br><sub>3.0.13 · preview · исходники доступны · без обязательной оплаты</sub></p>
+<p align="center"><a href="https://github.com/playsin333/playsin-boost/actions/workflows/validate.yml"><img src="https://github.com/playsin333/playsin-boost/actions/workflows/validate.yml/badge.svg" alt="Проверки пакета и источника обновлений"></a><br><sub>3.0.14 · preview · исходники доступны · без обязательной оплаты</sub></p>
 
 ---
 
@@ -61,12 +61,14 @@ PLAYSIN BOOST объединяет настройку фона Windows, авто
 
 ## Начать
 
-1. [Скачай ZIP 3.0.13](https://github.com/playsin333/playsin-boost/raw/refs/heads/main/releases/v3.0.13/PLAYSIN-BOOST-3.0.13.zip) и **распакуй весь комплект** в обычную папку.
+1. [Скачай ZIP 3.0.14](https://github.com/playsin333/playsin-boost/raw/refs/heads/main/releases/v3.0.14/PLAYSIN-BOOST-3.0.14.zip) и **распакуй весь комплект** в обычную папку.
 2. Запусти `PLAYSIN BOOST 3.0.bat`. Папки `nvidia`, `checker` и `Программы` оставь рядом. Используется штатный Windows PowerShell — отдельно устанавливать его не нужно.
 3. Открой **3 — Проверить ПК**, затем выбери набор или ручной выбор. Прочитай план и подтверди нужные действия. Для применения потребуется повышение прав своей учётной записи Windows.
 4. Прочитай итоговый лог и выполни перезагрузку, если она нужна выбранным настройкам.
 
 [Подробная инструкция](https://github.com/playsin333/playsin-boost/blob/main/docs/QUICKSTART.md) · [Частые вопросы](https://github.com/playsin333/playsin-boost/blob/main/docs/FAQ.md) · [Переход со старой версии](https://github.com/playsin333/playsin-boost/blob/main/docs/QUICKSTART.md#переход-со-старой-версии)
+
+Если вместо русского текста видны `???`, смотри [инструкцию](docs/FAQ.md#вместо-русского-текста-вопросительные-знаки).
 
 ## Что важно перед настройкой
 

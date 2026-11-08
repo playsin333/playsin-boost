@@ -3,7 +3,7 @@
 chcp 65001 >nul
 set "P3_SELF=%~f0"
 set "P3_ARG=%~1"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "try { iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),'PLAYSIN-BOOST-error.txt'); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host ('Error details: '+$d); exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding; iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),'PLAYSIN-BOOST-error.txt'); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host ('Error details: '+$d); exit 1 }"
 set "P3_EXIT=%errorlevel%"
 if "%P3_EXIT%"=="0" exit /b 0
 if "%P3_EXIT%"=="2" exit /b 0
@@ -69,7 +69,7 @@ $BR = @{
 # @brand-end
 
 # PLAYSIN BOOST 3.0 · playsin333
-$P3Version   = '3.0.13'
+$P3Version   = '3.0.14'
 $P3Root      = Join-Path $env:SystemDrive $BR.Tag
 $OtherRoot   = Join-Path $env:SystemDrive $BR.Other
 $Desktop     = [Environment]::GetFolderPath('Desktop')
@@ -4310,7 +4310,7 @@ function Get-SignBlock {
 
 function Get-NestedText([string]$Kind, [string]$Body, [bool]$WithNv) {
     $L = New-Object System.Collections.Generic.List[string]
-    foreach ($x in @('<# :', '@echo off', 'chcp 65001 >nul', 'set "P3_SELF=%~f0"', 'set "P3_ARG=%~1"', 'powershell -NoProfile -ExecutionPolicy Bypass -Command "try { iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),''PLAYSIN-BOOST-error.txt''); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host (''Error details: ''+$d); exit 1 }"', 'set "P3_EXIT=%errorlevel%"', 'if "%P3_EXIT%"=="1" pause', 'exit /b %P3_EXIT%')) { $L.Add($x) }
+    foreach ($x in @('<# :', '@echo off', 'chcp 65001 >nul', 'set "P3_SELF=%~f0"', 'set "P3_ARG=%~1"', 'powershell -NoProfile -ExecutionPolicy Bypass -Command "try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding; iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),''PLAYSIN-BOOST-error.txt''); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host (''Error details: ''+$d); exit 1 }"', 'set "P3_EXIT=%errorlevel%"', 'if "%P3_EXIT%"=="1" pause', 'exit /b %P3_EXIT%')) { $L.Add($x) }
     foreach ($x in @(Get-SignBlock)) { $L.Add($x) }
     $L.Add('#>')
     $L.Add('# ' + $BR.Sign.TrimStart(';', ' ') + ' · ' + $Kind)
@@ -5042,6 +5042,7 @@ function Get-TweakCheckerStartInfo {
     $command = @'
 $ErrorActionPreference = 'Stop'
 try {
+    [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding;
     & ([scriptblock]::Create([IO.File]::ReadAllText($env:TC_SELF, [Text.Encoding]::UTF8)))
 } catch {
     Write-Host ('TWEAK CHECK: ' + $_.Exception.Message) -ForegroundColor Red

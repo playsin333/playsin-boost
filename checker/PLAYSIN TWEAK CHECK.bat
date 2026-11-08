@@ -2,7 +2,7 @@
 @echo off
 chcp 65001 >nul
 set "TC_SELF=%~f0"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ([IO.File]::ReadAllText($env:TC_SELF,[Text.Encoding]::UTF8))"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding; iex ([IO.File]::ReadAllText($env:TC_SELF,[Text.Encoding]::UTF8))"
 exit /b
 :: ============================================================
 ::  PLAYSIN TWEAK CHECK · by playsin333
