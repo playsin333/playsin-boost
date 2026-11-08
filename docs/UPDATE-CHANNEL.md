@@ -14,7 +14,7 @@
 ## Сборка
 
 ```text
-python tools/package.py releases/v3.0.14/PLAYSIN-BOOST-3.0.14.zip --sync-metadata --check-metadata --archive-url https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.14/PLAYSIN-BOOST-3.0.14.zip --release-manifest boost-release.json
+python tools/package.py releases/v3.0.15/PLAYSIN-BOOST-3.0.15.zip --sync-metadata --check-metadata --archive-url https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.15/PLAYSIN-BOOST-3.0.15.zip --release-manifest boost-release.json
 python tools/verify_release.py
 ```
 
