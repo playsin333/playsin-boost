@@ -3,7 +3,7 @@
 chcp 65001 >nul
 set "P3_SELF=%~f0"
 set "P3_ARG=%~1"
-powershell -NoProfile -ExecutionPolicy Bypass -Command "try { iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),'PLAYSIN-BOOST-error.txt'); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host ('Error details: '+$d); exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding; iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),'PLAYSIN-BOOST-error.txt'); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host ('Error details: '+$d); exit 1 }"
 set "P3_EXIT=%errorlevel%"
 if "%P3_EXIT%"=="0" exit /b 0
 if "%P3_EXIT%"=="2" exit /b 0
@@ -69,7 +69,7 @@ $BR = @{
 # @brand-end
 
 # PLAYSIN BOOST 3.0 · playsin333
-$P3Version   = '3.0.13'
+$P3Version   = '3.0.15'
 $P3Root      = Join-Path $env:SystemDrive $BR.Tag
 $OtherRoot   = Join-Path $env:SystemDrive $BR.Other
 $Desktop     = [Environment]::GetFolderPath('Desktop')
@@ -111,6 +111,58 @@ $CommonCode = @'
 $Utf8Bom   = New-Object System.Text.UTF8Encoding($true)
 $Utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 $Count = @{ OK = 0; SKIP = 0; ERR = 0; INFO = 0 }
+
+# Raster console fonts can render Cyrillic as question marks even with UTF-8.
+# Change only the current classic console; keep existing TrueType fonts and Terminal settings.
+function Set-BoostConsoleFont {
+    if ([Environment]::OSVersion.Platform -ne [PlatformID]::Win32NT -or $env:WT_SESSION) { return }
+    try {
+        if (-not ('BoostConsoleFont' -as [type])) {
+            Add-Type -TypeDefinition @"
+using System;
+using System.Runtime.InteropServices;
+public static class BoostConsoleFont {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Coord { public short X; public short Y; }
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    public struct FontInfo {
+        public uint Size;
+        public uint Index;
+        public Coord Cell;
+        public uint Family;
+        public uint Weight;
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public string Face;
+    }
+    [DllImport("kernel32.dll")] static extern IntPtr GetStdHandle(int id);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    static extern bool GetCurrentConsoleFontEx(IntPtr handle, bool maximum, ref FontInfo font);
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+    static extern bool SetCurrentConsoleFontEx(IntPtr handle, bool maximum, ref FontInfo font);
+    public static bool IsRaster(uint family) { return (family & 4) == 0; }
+    public static bool EnsureUnicodeFont() {
+        IntPtr handle = GetStdHandle(-11);
+        if (handle == IntPtr.Zero || handle == new IntPtr(-1)) return false;
+        var font = new FontInfo();
+        font.Size = (uint)Marshal.SizeOf(typeof(FontInfo));
+        if (!GetCurrentConsoleFontEx(handle, false, ref font)) return false;
+        if (!IsRaster(font.Family)) return true;
+        font.Face = "Consolas";
+        font.Family = 0x36;
+        font.Weight = 400;
+        font.Cell.X = 0;
+        font.Cell.Y = (short)Math.Max(12, (int)font.Cell.Y);
+        if (!SetCurrentConsoleFontEx(handle, false, ref font)) return false;
+        return GetCurrentConsoleFontEx(handle, false, ref font) && !IsRaster(font.Family);
+    }
+}
+"@
+        }
+        [void][BoostConsoleFont]::EnsureUnicodeFont()
+    } catch {
+        # Font APIs are unavailable for redirected output and some console hosts.
+        # A display-only fallback must never prevent startup or rollback.
+    }
+}
 
 function Initialize-BoostGraphicsNative {
     if ('P3Graphics' -as [type]) { return }
@@ -587,6 +639,7 @@ public static class P3Con {
 }
 "@
 function Set-NoQuickEdit {
+    Set-BoostConsoleFont
     try { if (-not ('P3Con' -as [type])) { Add-Type -TypeDefinition $P3ConCode }; [P3Con]::NoQuickEdit() } catch {}
 }
 
@@ -4310,7 +4363,7 @@ function Get-SignBlock {
 
 function Get-NestedText([string]$Kind, [string]$Body, [bool]$WithNv) {
     $L = New-Object System.Collections.Generic.List[string]
-    foreach ($x in @('<# :', '@echo off', 'chcp 65001 >nul', 'set "P3_SELF=%~f0"', 'set "P3_ARG=%~1"', 'powershell -NoProfile -ExecutionPolicy Bypass -Command "try { iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),''PLAYSIN-BOOST-error.txt''); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host (''Error details: ''+$d); exit 1 }"', 'set "P3_EXIT=%errorlevel%"', 'if "%P3_EXIT%"=="1" pause', 'exit /b %P3_EXIT%')) { $L.Add($x) }
+    foreach ($x in @('<# :', '@echo off', 'chcp 65001 >nul', 'set "P3_SELF=%~f0"', 'set "P3_ARG=%~1"', 'powershell -NoProfile -ExecutionPolicy Bypass -Command "try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding; iex ([IO.File]::ReadAllText($env:P3_SELF,[Text.Encoding]::UTF8)) } catch { $r=$_; $d=[IO.Path]::Combine([IO.Path]::GetTempPath(),''PLAYSIN-BOOST-error.txt''); $m=$r.ToString()+[Environment]::NewLine+$r.InvocationInfo.PositionMessage+[Environment]::NewLine+$r.ScriptStackTrace; try { [IO.File]::WriteAllText($d,$m,[Text.Encoding]::UTF8) } catch {}; Write-Host $m -ForegroundColor Red; Write-Host (''Error details: ''+$d); exit 1 }"', 'set "P3_EXIT=%errorlevel%"', 'if "%P3_EXIT%"=="1" pause', 'exit /b %P3_EXIT%')) { $L.Add($x) }
     foreach ($x in @(Get-SignBlock)) { $L.Add($x) }
     $L.Add('#>')
     $L.Add('# ' + $BR.Sign.TrimStart(';', ' ') + ' · ' + $Kind)
@@ -5042,6 +5095,7 @@ function Get-TweakCheckerStartInfo {
     $command = @'
 $ErrorActionPreference = 'Stop'
 try {
+    [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false); [Console]::InputEncoding = [Console]::OutputEncoding; $OutputEncoding = [Console]::OutputEncoding;
     & ([scriptblock]::Create([IO.File]::ReadAllText($env:TC_SELF, [Text.Encoding]::UTF8)))
 } catch {
     Write-Host ('TWEAK CHECK: ' + $_.Exception.Message) -ForegroundColor Red

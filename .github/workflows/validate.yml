@@ -27,3 +27,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify isolated update source resolver
         run: '& tests/UpdateSource.Tests.ps1'
+      - name: Verify UTF-8 launchers and real BAT headers
+        run: '& tests/Encoding.Tests.ps1'
+      - name: Verify raster font fallback in a disposable console
+        run: '& tests/ConsoleFont.Tests.ps1'
