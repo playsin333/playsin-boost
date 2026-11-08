@@ -69,7 +69,7 @@ $BR = @{
 # @brand-end
 
 # PLAYSIN BOOST 3.0 · playsin333
-$P3Version   = '3.0.15'
+$P3Version   = '3.0.16'
 $P3Root      = Join-Path $env:SystemDrive $BR.Tag
 $OtherRoot   = Join-Path $env:SystemDrive $BR.Other
 $Desktop     = [Environment]::GetFolderPath('Desktop')
@@ -5019,11 +5019,54 @@ function Show-PcReport {
     Wait-Key
 }
 
+# Prepare each child console using the current pack, even when installed tools are older.
+# Source scripts and backup/state files are never rewritten just to fix display.
+function Get-BoostToolStartInfo([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { throw 'Installed BOOST tool was not found' }
+    $font = 'function Set-BoostConsoleFont {' + (Get-Command Set-BoostConsoleFont).ScriptBlock.ToString() + "`r`n}"
+    $command = '$env:P3_SELF=' + (Q $Path) + ';$env:P3_ARG='''';Remove-Item Env:P3_NOMAIN -ErrorAction SilentlyContinue;' + "`r`n" + $font + "`r`n" + @'
+$ErrorActionPreference = 'Stop'
+try {
+    [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+    [Console]::InputEncoding = [Console]::OutputEncoding
+    $OutputEncoding = [Console]::OutputEncoding
+    Set-BoostConsoleFont
+    & ([scriptblock]::Create([IO.File]::ReadAllText($env:P3_SELF, [Text.Encoding]::UTF8)))
+} catch {
+    $details = $_.ToString() + [Environment]::NewLine + $_.InvocationInfo.PositionMessage + [Environment]::NewLine + $_.ScriptStackTrace
+    $log = [IO.Path]::Combine([IO.Path]::GetTempPath(), 'PLAYSIN-BOOST-error.txt')
+    try { [IO.File]::WriteAllText($log, $details, [Text.Encoding]::UTF8) } catch {}
+    Write-Host $details -ForegroundColor Red
+    Write-Host ('Error details: ' + $log)
+    if (-not [Console]::IsInputRedirected) { try { [void][Console]::ReadKey($true) } catch {} }
+    exit 1
+}
+'@
+    $start = New-Object Diagnostics.ProcessStartInfo
+    $start.FileName = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
+    $start.Arguments = '-NoLogo -NoProfile -ExecutionPolicy Bypass -OutputFormat Text -EncodedCommand ' + [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($command))
+    $start.UseShellExecute = $true
+    $start.WorkingDirectory = Split-Path -Parent $Path
+    return $start
+}
+
 function Open-BoostTool([string]$Kind) {
     $names = @{ rollback = $RollbackName; game = $GameName; check = $CheckName }
+    if (-not $names.ContainsKey($Kind)) { throw 'Unknown BOOST tool' }
     $path = Join-Path $P3Root ($names[$Kind] + '.bat')
     if (-not (Test-Path -LiteralPath $path)) { Write-Host '  После настройки этот инструмент появится здесь.' -ForegroundColor Yellow; Wait-Key; return }
-    Start-Process -FilePath $env:ComSpec -ArgumentList ('/c ""' + $path + '""') -Wait
+    $child = $null
+    try {
+        # Main already requests administrator rights before opening these tools.
+        $child = [Diagnostics.Process]::Start((Get-BoostToolStartInfo $path))
+        $child.WaitForExit()
+    } catch {
+        Write-Host ('  Не удалось открыть инструмент: ' + $_.Exception.Message) -ForegroundColor Yellow
+        Wait-Key
+    } finally {
+        if ($child) { $child.Dispose() }
+        Set-ConsoleLook
+    }
 }
 
 function Show-BoostHistory {

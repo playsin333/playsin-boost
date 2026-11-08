@@ -31,3 +31,5 @@ jobs:
         run: '& tests/Encoding.Tests.ps1'
       - name: Verify raster font fallback in a disposable console
         run: '& tests/ConsoleFont.Tests.ps1'
+      - name: Verify menu launches older installed tools with current console preparation
+        run: '& tests/InstalledTool.Tests.ps1'
