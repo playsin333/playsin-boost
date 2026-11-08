@@ -30,23 +30,25 @@ public static class ConsoleFontProbe {
     [DllImport("kernel32.dll")] static extern IntPtr GetStdHandle(int id);
     [DllImport("kernel32.dll", CharSet=CharSet.Unicode)] static extern bool GetCurrentConsoleFontEx(IntPtr h, bool m, ref BoostConsoleFont.FontInfo f);
     [DllImport("kernel32.dll", CharSet=CharSet.Unicode)] static extern bool SetCurrentConsoleFontEx(IntPtr h, bool m, ref BoostConsoleFont.FontInfo f);
-    public static void Run() {
+    public static string Run() {
         FreeConsole();
         if (!AllocConsole()) throw new Exception("Could not create disposable console");
         try {
             var f = new BoostConsoleFont.FontInfo();
             f.Size = 84; f.Face = "Terminal"; f.Family = 0x30; f.Weight = 400; f.Cell.X = 8; f.Cell.Y = 12;
             IntPtr h = GetStdHandle(-11);
-            if (!SetCurrentConsoleFontEx(h, false, ref f) || !GetCurrentConsoleFontEx(h, false, ref f) || !BoostConsoleFont.IsRaster(f.Family))
-                throw new Exception("Could not establish raster font precondition");
-            if (!BoostConsoleFont.EnsureUnicodeFont()) throw new Exception("Unicode font fallback failed");
-            if (!GetCurrentConsoleFontEx(h, false, ref f) || BoostConsoleFont.IsRaster(f.Family) || f.Face != "Consolas")
-                throw new Exception("Console did not switch from raster font to Consolas");
+            bool raster = SetCurrentConsoleFontEx(h, false, ref f) && GetCurrentConsoleFontEx(h, false, ref f) && BoostConsoleFont.IsRaster(f.Family);
+            if (raster) {
+                if (!BoostConsoleFont.EnsureUnicodeFont()) throw new Exception("Unicode font fallback failed");
+                if (!GetCurrentConsoleFontEx(h, false, ref f) || BoostConsoleFont.IsRaster(f.Family) || f.Face != "Consolas")
+                    throw new Exception("Console did not switch from raster font to Consolas");
+            }
             f.Face = "Lucida Console"; f.Family = 0x36;
             if (!SetCurrentConsoleFontEx(h, false, ref f) || !GetCurrentConsoleFontEx(h, false, ref f)) throw new Exception("Could not set TrueType precondition");
             string face = f.Face;
             if (!BoostConsoleFont.EnsureUnicodeFont() || !GetCurrentConsoleFontEx(h, false, ref f) || f.Face != face)
                 throw new Exception("Existing TrueType font was changed");
+            return raster ? "PASS: raster console switched to Consolas; TrueType font preserved" : "SKIP: runner could not select a raster font; PASS: existing TrueType font preserved";
         } finally { FreeConsole(); }
     }
 }
@@ -63,8 +65,8 @@ try {
 try {
     $ErrorActionPreference = 'Stop'
     Add-Type -Path $env:BOOST_FONT_TEST_SOURCE
-    [ConsoleFontProbe]::Run()
-    [IO.File]::WriteAllText($env:BOOST_FONT_TEST_SOURCE + '.result', 'ok')
+    $result = [ConsoleFontProbe]::Run()
+    [IO.File]::WriteAllText($env:BOOST_FONT_TEST_SOURCE + '.result', $result)
     exit 0
 } catch {
     [IO.File]::WriteAllText($env:BOOST_FONT_TEST_SOURCE + '.result', $_.Exception.ToString())
@@ -73,7 +75,7 @@ try {
 '@
     & $exe -NoProfile -NonInteractive -Command $probeCommand
     if ($LASTEXITCODE -ne 0) { throw ('Native font regression test failed: ' + [IO.File]::ReadAllText($source + '.result')) }
-    Write-Host 'PASS: disposable Windows console switches raster to Consolas and preserves TrueType fonts'
+    Write-Host ([IO.File]::ReadAllText($source + '.result'))
 } finally {
     Remove-Item Env:BOOST_FONT_TEST_SOURCE -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath $folder -Recurse -Force -ErrorAction SilentlyContinue
