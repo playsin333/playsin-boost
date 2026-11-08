@@ -59,8 +59,20 @@ try {
     [IO.File]::WriteAllText($source, $code + "`n" + ($probe -replace 'using System;\r?\n','' -replace 'using System.Runtime.InteropServices;\r?\n',''), [Text.Encoding]::UTF8)
     $env:BOOST_FONT_TEST_SOURCE = $source
     $exe = (Get-Process -Id $PID).Path
-    & $exe -NoProfile -NonInteractive -Command 'Add-Type -Path $env:BOOST_FONT_TEST_SOURCE; [ConsoleFontProbe]::Run()'
-    if ($LASTEXITCODE -ne 0) { throw 'Native font regression test failed' }
+    $probeCommand = @'
+try {
+    $ErrorActionPreference = 'Stop'
+    Add-Type -Path $env:BOOST_FONT_TEST_SOURCE
+    [ConsoleFontProbe]::Run()
+    [IO.File]::WriteAllText($env:BOOST_FONT_TEST_SOURCE + '.result', 'ok')
+    exit 0
+} catch {
+    [IO.File]::WriteAllText($env:BOOST_FONT_TEST_SOURCE + '.result', $_.Exception.ToString())
+    exit 1
+}
+'@
+    & $exe -NoProfile -NonInteractive -Command $probeCommand
+    if ($LASTEXITCODE -ne 0) { throw ('Native font regression test failed: ' + [IO.File]::ReadAllText($source + '.result')) }
     Write-Host 'PASS: disposable Windows console switches raster to Consolas and preserves TrueType fonts'
 } finally {
     Remove-Item Env:BOOST_FONT_TEST_SOURCE -ErrorAction SilentlyContinue
