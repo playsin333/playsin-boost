@@ -28,12 +28,18 @@ public static class ConsoleFontProbe {
     [DllImport("kernel32.dll")] static extern bool AllocConsole();
     [DllImport("kernel32.dll")] static extern bool FreeConsole();
     [DllImport("kernel32.dll")] static extern IntPtr GetStdHandle(int id);
+    [DllImport("kernel32.dll")] static extern bool SetStdHandle(int id, IntPtr handle);
+    [DllImport("kernel32.dll", CharSet=CharSet.Unicode)] static extern IntPtr CreateFile(string name, uint access, uint share, IntPtr security, uint creation, uint flags, IntPtr template);
+    [DllImport("kernel32.dll")] static extern bool CloseHandle(IntPtr handle);
     [DllImport("kernel32.dll", CharSet=CharSet.Unicode)] static extern bool GetCurrentConsoleFontEx(IntPtr h, bool m, ref BoostConsoleFont.FontInfo f);
     [DllImport("kernel32.dll", CharSet=CharSet.Unicode)] static extern bool SetCurrentConsoleFontEx(IntPtr h, bool m, ref BoostConsoleFont.FontInfo f);
     public static string Run() {
         FreeConsole();
         if (!AllocConsole()) throw new Exception("Could not create disposable console");
+        // CI redirects standard output to a pipe. AllocConsole may preserve that handle.
+        IntPtr output = CreateFile("CONOUT$", 0xC0000000, 3, IntPtr.Zero, 3, 0, IntPtr.Zero);
         try {
+            if (output == new IntPtr(-1) || !SetStdHandle(-11, output)) throw new Exception("Could not attach disposable console output");
             var f = new BoostConsoleFont.FontInfo();
             f.Size = 84; f.Face = "Terminal"; f.Family = 0x30; f.Weight = 400; f.Cell.X = 8; f.Cell.Y = 12;
             IntPtr h = GetStdHandle(-11);
@@ -49,7 +55,7 @@ public static class ConsoleFontProbe {
             if (!BoostConsoleFont.EnsureUnicodeFont() || !GetCurrentConsoleFontEx(h, false, ref f) || f.Face != face)
                 throw new Exception("Existing TrueType font was changed");
             return raster ? "PASS: raster console switched to Consolas; TrueType font preserved" : "SKIP: runner could not select a raster font; PASS: existing TrueType font preserved";
-        } finally { FreeConsole(); }
+        } finally { if (output != new IntPtr(-1)) CloseHandle(output); FreeConsole(); }
     }
 }
 '@
