@@ -14,6 +14,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Prepare release files on builder
+        run: |
+          python tools/package.py releases/v3.0.17/PLAYSIN-BOOST-3.0.17.zip --sync-metadata --check-metadata --archive-url https://raw.githubusercontent.com/playsin333/playsin-boost/main/releases/v3.0.17/PLAYSIN-BOOST-3.0.17.zip --release-manifest boost-release.json
+          python - <<'PY'
+          import base64, hashlib, json
+          from pathlib import Path
+          data = Path('releases/v3.0.17/PLAYSIN-BOOST-3.0.17.zip').read_bytes()
+          encoded = base64.b64encode(data).decode('ascii')
+          chunks = [encoded[n:n+4000] for n in range(0, len(encoded), 4000)]
+          metadata = {'ArchiveSize': len(data), 'ArchiveBlobSha': hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest(), 'Chunks': len(chunks), 'Files': {name: Path(name).read_text(encoding='utf-8') for name in ['BOOST-PACKAGE.json', 'SHA256SUMS.txt', 'boost-release.json']}}
+          print('BOOST_PACKAGE_METADATA_JSON=' + json.dumps(metadata))
+          for index, chunk in enumerate(chunks):
+              print('BOOST_PACKAGE_CHUNK_%04d=' % index + chunk)
+          PY
+      - name: Run existing mocked suite
+        run: pwsh -NoLogo -NoProfile -File tests/Run-Tests.ps1
       - run: python tools/verify_release.py
   source:
     runs-on: windows-latest
