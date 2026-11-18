@@ -33,3 +33,5 @@ jobs:
         run: '& tests/ConsoleFont.Tests.ps1'
       - name: Verify menu launches older installed tools with current console preparation
         run: '& tests/InstalledTool.Tests.ps1'
+      - name: Verify disconnected Steam libraries are skipped
+        run: '& tests/GameDiscovery.Tests.ps1'

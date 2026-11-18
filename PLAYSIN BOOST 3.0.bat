@@ -69,7 +69,7 @@ $BR = @{
 # @brand-end
 
 # PLAYSIN BOOST 3.0 · playsin333
-$P3Version   = '3.0.16'
+$P3Version   = '3.0.17'
 $P3Root      = Join-Path $env:SystemDrive $BR.Tag
 $OtherRoot   = Join-Path $env:SystemDrive $BR.Other
 $Desktop     = [Environment]::GetFolderPath('Desktop')
@@ -1028,13 +1028,17 @@ function Get-GameFolders {
     $steam = Get-RegValue 'HKCU\Software\Valve\Steam' 'SteamPath'
     if ($steam) {
         $libs = @(([string]$steam.Value) -replace '/', '\')
-        $vdf = Join-Path $libs[0] 'steamapps\libraryfolders.vdf'
-        if (Test-Path -LiteralPath $vdf) {
-            foreach ($m in [regex]::Matches([IO.File]::ReadAllText($vdf), '"path"\s+"([^"]+)"')) { $libs += ($m.Groups[1].Value -replace '\\\\', '\') }
-        }
+        # Steam can retain libraries on removed disks. Optional metadata must not abort discovery.
+        try {
+            $vdf = [IO.Path]::Combine($libs[0], 'steamapps', 'libraryfolders.vdf')
+            if (Test-Path -LiteralPath $vdf -PathType Leaf -ErrorAction SilentlyContinue) {
+                foreach ($m in [regex]::Matches([IO.File]::ReadAllText($vdf), '"path"\s+"([^"]+)"')) { $libs += ($m.Groups[1].Value -replace '\\\\', '\') }
+            }
+        } catch {}
         foreach ($lib in @($libs | Select-Object -Unique)) {
-            $common = Join-Path $lib 'steamapps\common'
-            if (-not (Test-Path -LiteralPath $common)) { continue }
+            if ([string]::IsNullOrWhiteSpace([string]$lib)) { continue }
+            try { $common = [IO.Path]::Combine($lib, 'steamapps', 'common') } catch { continue }
+            if (-not (Test-Path -LiteralPath $common -PathType Container -ErrorAction SilentlyContinue)) { continue }
             foreach ($g in @(Get-ChildItem -LiteralPath $common -Directory -ErrorAction SilentlyContinue)) {
                 if ($g.Name -match 'Steamworks|Redist|Proton|Runtime') { continue }
                 [void]$found.Add([pscustomobject]@{ Path = $g.FullName; Title = $g.Name })
